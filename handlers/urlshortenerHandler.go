@@ -40,14 +40,14 @@ func (h *UrlshortenerHandler) Shorten(c echo.Context) error {
 
 func (h *UrlshortenerHandler) GetLongUrl(c echo.Context) error {
 
-	surl := c.Param("shortUrl")
-	ourl, appErr := h.service.GetActualURL(surl)
+	shortUrl := c.Param("shortUrl")
+	longUrl, appErr := h.service.GetActualURL(shortUrl)
 	if appErr != nil {
 		logger.Error(appErr.Message)
 		return c.String(http.StatusNotFound, appErr.Message)
 	}
 
-	c.Response().Header().Set("Location", ourl)
+	c.Response().Header().Set("Location", longUrl)
 
 	return c.String(http.StatusMovedPermanently, "")
 }
