@@ -21,6 +21,7 @@ func Start() {
 
 	e.POST("/shorten", handler.Shorten)
 	e.GET("/:shortUrl", handler.GetLongUrl)
+	e.GET("/topmetric", handler.GetTopMetric)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -2,6 +2,7 @@ package models
 
 import (
 	"net/url"
+	"sort"
 	"sync"
 
 	"github.com/Sunilsoni2201/urlshortener/errors"
@@ -57,7 +58,21 @@ func (db *MemoryDB) GetTopMetric(n int) (topN map[string]int64, appArr *errors.A
 	db.mutex.RLock()
 	defer db.mutex.RUnlock()
 
-	return
+	if len(db.HostHitMetric) < n {
+		return db.HostHitMetric, nil
+	}
+
+	sortedHostHitMetric := sortHostHitMetric(db.HostHitMetric)
+	topN = make(map[string]int64)
+	count := 0
+	for k, v := range sortedHostHitMetric {
+		topN[k] = v
+		count += 1
+		if count == n {
+			break
+		}
+	}
+	return topN, nil
 }
 
 // Check if provided longUrl exists in the system
@@ -73,4 +88,30 @@ func (db *MemoryDB) LongUrlExist(longUrl string) (shortUrl string, found bool) {
 		}
 	}
 	return
+}
+
+// Pair represents a key-value pair
+type Pair struct {
+	Key   string
+	Value int64
+}
+
+func sortHostHitMetric(hostHitMetric map[string]int64) (sortedHostHitMetric map[string]int64) {
+	// Convert map to slice of key-value pairs
+	var pairs []Pair
+	for k, v := range hostHitMetric {
+		pairs = append(pairs, Pair{k, v})
+	}
+
+	// Sort the slice by values
+	sort.Slice(pairs, func(i, j int) bool {
+		return pairs[i].Value > pairs[j].Value
+	})
+
+	// Create a new map from the sorted slice
+	sortedHostHitMetric = make(map[string]int64)
+	for _, pair := range pairs {
+		sortedHostHitMetric[pair.Key] = pair.Value
+	}
+	return sortedHostHitMetric
 }

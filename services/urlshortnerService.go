@@ -13,6 +13,7 @@ import (
 type UrlShortner interface {
 	GetActualURL(string) (string, *errors.AppError)
 	CreateShortURL(string) (string, *errors.AppError)
+	GetTopMetric(int) map[string]int64
 }
 
 type urlShortner struct {
@@ -91,4 +92,9 @@ func createURLHash(longUrl string, hashLen int) (shortUrl string) {
 	salt := time.Now().String()
 	sha := sha256.Sum256([]byte(longUrl + salt))
 	return fmt.Sprintf("%x", sha)[:hashLen]
+}
+
+func (u *urlShortner) GetTopMetric(count int) map[string]int64 {
+	metricsMap, _ := u.db.GetTopMetric(count)
+	return metricsMap
 }

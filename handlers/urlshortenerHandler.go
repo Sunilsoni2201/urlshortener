@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
@@ -56,4 +57,17 @@ func (h *UrlshortenerHandler) GetLongUrl(c echo.Context) error {
 	}
 	c.Response().Header().Set("Location", longUrl)
 	return c.String(http.StatusMovedPermanently, "")
+}
+
+func (h *UrlshortenerHandler) GetTopMetric(c echo.Context) error {
+	Top3 := 3
+	ans := h.service.GetTopMetric(Top3)
+
+	jsonString, err := json.Marshal(ans)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+
+	return c.String(http.StatusOK, string(jsonString))
 }
