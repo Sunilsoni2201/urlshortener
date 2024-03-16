@@ -1,4 +1,4 @@
-# URL Shortener Service**
+# URL Shortener Service
 This project aims to build a simple URL shortener service that accepts a URL as an argument via a REST API and returns a shortened URL as a result. The goal is to create an API-only version of a URL shortener, similar to services like Bitly(https://bitly.com/).
 
 # Features
@@ -14,18 +14,22 @@ This project aims to build a simple URL shortener service that accepts a URL as 
 Extension: we  can add a feature that allows users to persist the data in DB or filesystem.
 
 # Usage
+
 **Shorten URL**
 Endpoint: POST /shorten
 
 This endpoint shortens a long URL provided in the request body and returns the shortened URL.
 
 Request -->
+
 `
 curl -X POST <machine_outbound_ip>:8080/shorten \
   -H "Content-Type: application/json" \
   -d '{"url": "https://www.google.com/"}'
 `
+
 Response -->
+
 `
 {
   "url": "<machine_outbound_ip>:8080/c03aa1"
@@ -33,16 +37,20 @@ Response -->
 `
 
 **Redirect to Original URL**
+
 Endpoint: GET /:shortUrl
 
 This endpoint redirects the user to the original URL associated with the provided shortUrl.
 
 Request -->
+
 `
 curl -X GET <machine_outbound_ip>:8080/c03aa1
 `
+
 Response -->
 redirect user to original long url, in this case "https://www.google.com/"
+
 
 **Top Metrics**
 Endpoint: GET /topmetric
@@ -50,10 +58,13 @@ Endpoint: GET /topmetric
 This endpoint returns the top 3 websites whose URLs have been most frequently shortened using this service.
 
 Request -->
+
 `
 curl -X GET http://localhost:8080/topmetric
 `
+
 Response -->
+
 `
 {"top_metrics":{"www.facebook.com":3,"www.google.com":2, "www.youtube.com":3}}
 `
