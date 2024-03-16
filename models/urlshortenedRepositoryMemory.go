@@ -62,16 +62,7 @@ func (db *MemoryDB) GetTopMetric(n int) (topN map[string]int64, appArr *errors.A
 		return db.HostHitMetric, nil
 	}
 
-	sortedHostHitMetric := sortHostHitMetric(db.HostHitMetric)
-	topN = make(map[string]int64)
-	count := 0
-	for k, v := range sortedHostHitMetric {
-		topN[k] = v
-		count += 1
-		if count == n {
-			break
-		}
-	}
+	topN = sortHostHitMetric(db.HostHitMetric, n)
 	return topN, nil
 }
 
@@ -96,7 +87,7 @@ type Pair struct {
 	Value int64
 }
 
-func sortHostHitMetric(hostHitMetric map[string]int64) (sortedHostHitMetric map[string]int64) {
+func sortHostHitMetric(hostHitMetric map[string]int64, n int) (sortedHostHitMetric map[string]int64) {
 	// Convert map to slice of key-value pairs
 	var pairs []Pair
 	for k, v := range hostHitMetric {
@@ -110,8 +101,13 @@ func sortHostHitMetric(hostHitMetric map[string]int64) (sortedHostHitMetric map[
 
 	// Create a new map from the sorted slice
 	sortedHostHitMetric = make(map[string]int64)
+	count := 0
 	for _, pair := range pairs {
 		sortedHostHitMetric[pair.Key] = pair.Value
+		count++
+		if count == n {
+			break
+		}
 	}
 	return sortedHostHitMetric
 }
