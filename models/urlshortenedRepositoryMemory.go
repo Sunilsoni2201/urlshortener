@@ -30,7 +30,7 @@ func (db *MemoryDB) Get(shortUrl string) (longUrl string, appArr *errors.AppErro
 
 	ok := false
 	if longUrl, ok = db.UrlsShortened[shortUrl]; !ok {
-		appArr = errors.NewNotFoundError("shortUrl not found")
+		appArr = errors.NewNotFoundError("shortUrl not found: " + shortUrl)
 	}
 	return
 }
@@ -74,12 +74,3 @@ func (db *MemoryDB) LongUrlExist(longUrl string) (shortUrl string, found bool) {
 	}
 	return
 }
-
-// func (db *MemoryDB) GetMetric(n int) (metric map[string]int64) {
-// 	metric = make(map[string]int64)
-// 	return
-// }
-
-// func (db *MemoryDB) updateMetric(key string) {
-// 	db.Metric[key]++
-// }

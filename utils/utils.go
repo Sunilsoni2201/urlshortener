@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"net"
+	"net/url"
 )
 
 // GetOutboundIP Get outbound ip of the machine
@@ -16,4 +17,16 @@ func GetOutboundIP() net.IP {
 	localAddr := connection.LocalAddr().(*net.UDPAddr)
 
 	return localAddr.IP
+}
+
+func IsValidURL(u string) (bool, error) {
+	parsedUrl, err := url.Parse(u)
+	if err != nil {
+		return false, err
+	}
+
+	if parsedUrl.Scheme == "" || parsedUrl.Host == "" {
+		return false, nil
+	}
+	return true, nil
 }

@@ -27,6 +27,13 @@ func (h *UrlshortenerHandler) Shorten(c echo.Context) error {
 
 	_ = c.Bind(&in)
 
+	logger.Info("shortUrl fetched from request(echo.Context) :" + in.Url)
+
+	valid, err := utils.IsValidURL(in.Url)
+	if err != nil || !valid {
+		return c.String(http.StatusUnprocessableEntity, "Please provide a full valid URL with host & scheme(http or https)")
+	}
+
 	surl, appErr := h.service.CreateShortURL(in.Url)
 	if appErr != nil {
 		logger.Error(appErr.Message)
@@ -42,12 +49,11 @@ func (h *UrlshortenerHandler) GetLongUrl(c echo.Context) error {
 
 	shortUrl := c.Param("shortUrl")
 	longUrl, appErr := h.service.GetActualURL(shortUrl)
+	logger.Info("shortUrl: " + shortUrl + ", longUrl: " + longUrl)
 	if appErr != nil {
 		logger.Error(appErr.Message)
 		return c.String(http.StatusNotFound, appErr.Message)
 	}
-
 	c.Response().Header().Set("Location", longUrl)
-
 	return c.String(http.StatusMovedPermanently, "")
 }
