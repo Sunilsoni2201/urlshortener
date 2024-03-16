@@ -60,19 +60,20 @@ func (db *MemoryDB) GetTopMetric(n int) (topN map[string]int64, appArr *errors.A
 	return
 }
 
-// func (db *MemoryDB) LongUrlExist(longUrl string) (shortUrl string, found bool) {
-// 	db.mutex.RLock()
-// 	defer db.mutex.RUnlock()
+// Check if provided longUrl exists in the system
+func (db *MemoryDB) LongUrlExist(longUrl string) (shortUrl string, found bool) {
+	db.mutex.RLock()
+	defer db.mutex.RUnlock()
 
-// 	for k, v := range db.UrlsShortened {
-// 		if v == longUrl {
-// 			shortUrl = k
-// 			found = true
-// 			return
-// 		}
-// 	}
-// 	return
-// }
+	for k, v := range db.UrlsShortened {
+		if v == longUrl {
+			shortUrl = k
+			found = true
+			return
+		}
+	}
+	return
+}
 
 // func (db *MemoryDB) GetMetric(n int) (metric map[string]int64) {
 // 	metric = make(map[string]int64)

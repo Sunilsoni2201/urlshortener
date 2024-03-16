@@ -16,10 +16,10 @@ type UrlShortner interface {
 }
 
 type urlShortner struct {
-	db models.UrlShortnerDB
+	db models.UrlShortenedRepository
 }
 
-func NewUrlShortenerService(db models.UrlShortnerDB) *urlShortner {
+func NewUrlShortenerService(db models.UrlShortenedRepository) *urlShortner {
 	return &urlShortner{
 		db: db,
 	}
