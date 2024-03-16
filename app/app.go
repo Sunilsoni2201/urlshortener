@@ -20,7 +20,7 @@ func Start() {
 	handler := handlers.NewUrlshortenerHandler(srv)
 
 	e.POST("/shorten", handler.Shorten)
-	e.GET("/:shortUrl", handler.GetLongUrl)
+	e.GET("/:shortUrl", handler.RedirectToOriginalURL)
 	e.GET("/topmetric", handler.GetTopMetric)
 
 	e.Logger.Fatal(e.Start(":8080"))

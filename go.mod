@@ -19,5 +19,6 @@ require (
 
 require (
 	github.com/labstack/echo v3.3.10+incompatible
+	github.com/labstack/echo/v4 v4.11.4
 	go.uber.org/multierr v1.10.0 // indirect
 )

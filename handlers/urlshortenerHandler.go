@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/Sunilsoni2201/urlshortener/dto"
 	"github.com/Sunilsoni2201/urlshortener/logger"
 	"github.com/Sunilsoni2201/urlshortener/services"
 	"github.com/Sunilsoni2201/urlshortener/utils"
@@ -21,35 +22,24 @@ func NewUrlshortenerHandler(srv services.UrlShortner) *UrlshortenerHandler {
 }
 
 func (h *UrlshortenerHandler) Shorten(c echo.Context) error {
-	type In struct {
-		Url string `json:"url"`
-	}
-	in := In{}
+	req := dto.ShortenRequest{}
+	_ = c.Bind(&req)
 
-	_ = c.Bind(&in)
-
-	logger.Info("shortUrl fetched from request(echo.Context) :" + in.Url)
-
-	valid, err := utils.IsValidURL(in.Url)
-	if err != nil || !valid {
-		return c.String(http.StatusUnprocessableEntity, "Please provide a full valid URL with host & scheme(http or https)")
-	}
-
-	surl, appErr := h.service.CreateShortURL(in.Url)
+	resp, appErr := h.service.CreateShortURL(&req)
 	if appErr != nil {
 		logger.Error(appErr.Message)
 		return c.String(http.StatusInternalServerError, appErr.Message)
 	}
 
 	serverPort := c.Echo().Listener.Addr().(*net.TCPAddr).Port
-	shortURL := fmt.Sprintf("%v:%v/%s", utils.GetOutboundIP(), serverPort, surl)
+	shortURL := fmt.Sprintf("%v:%v/%s", utils.GetOutboundIP(), serverPort, resp.GetUrl())
 	return c.String(http.StatusOK, shortURL)
 }
 
-func (h *UrlshortenerHandler) GetLongUrl(c echo.Context) error {
+func (h *UrlshortenerHandler) RedirectToOriginalURL(c echo.Context) error {
 
 	shortUrl := c.Param("shortUrl")
-	longUrl, appErr := h.service.GetActualURL(shortUrl)
+	longUrl, appErr := h.service.GetOrignialLongURL(shortUrl)
 	logger.Info("shortUrl: " + shortUrl + ", longUrl: " + longUrl)
 	if appErr != nil {
 		logger.Error(appErr.Message)
