@@ -87,6 +87,7 @@ type Pair struct {
 	Value int64
 }
 
+// Sorts the host hit metric by value in descending order and returns the sorted list as a map of size n
 func sortHostHitMetric(hostHitMetric map[string]int64, n int) (sortedHostHitMetric map[string]int64) {
 	// Convert map to slice of key-value pairs
 	var pairs []Pair
