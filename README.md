@@ -72,7 +72,10 @@ Response -->
 # Setup
 To run this service locally:
 
-Clone this repository.
-Build the executable: go build -o bin/url-shortener main.go
-Run the executable: ./url-shortener
-Make sure you have Go installed on your system.
+-> Clone this repository.
+
+-> Build the executable: go build -o bin/url-shortener main.go
+
+-> Run the executable: ./url-shortener
+
+-> Make sure you have Go installed on your system.
