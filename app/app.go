@@ -19,8 +19,13 @@ func Start() {
 	srv := services.NewUrlShortenerService(db)
 	handler := handlers.NewUrlshortenerHandler(srv)
 
+	// API to create a new short URL from long URL
 	e.POST("/shorten", handler.Shorten)
+
+	// API to redirect user to the original URL if it exists
 	e.GET("/:shortUrl", handler.RedirectToOriginalURL)
+
+	// API to get top metric (currently it is hardcoded to 3)
 	e.GET("/topmetric", handler.GetTopMetric)
 
 	e.Logger.Fatal(e.Start(":8080"))

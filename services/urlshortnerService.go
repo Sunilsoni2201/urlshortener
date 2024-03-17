@@ -11,6 +11,10 @@ import (
 	"github.com/Sunilsoni2201/urlshortener/models"
 )
 
+/*
+This is service layer  for URL shortening functionality.
+It interacts with the database layer and returns appropriate responses to the controller layer(handler fucntions).
+*/
 type UrlShortner interface {
 	GetOrignialLongURL(string) (string, *errors.AppError)
 	CreateShortURL(*dto.ShortenRequest) (*dto.ShortenResponse, *errors.AppError)
@@ -27,6 +31,8 @@ func NewUrlShortenerService(db models.UrlShortenedRepository) *urlShortner {
 	}
 }
 
+// Get the original long URL from database using the Short URL.
+// If it does not exist in DB then return an error
 func (u *urlShortner) GetOrignialLongURL(shortUrl string) (longUrl string, appErr *errors.AppError) {
 
 	longUrl, appErr = u.db.Get(shortUrl)
@@ -44,6 +50,8 @@ func (u *urlShortner) GetOrignialLongURL(shortUrl string) (longUrl string, appEr
 	return longUrl, nil
 }
 
+// Create a new entry in the database with Long URL and generate a unique Short URL.
+// Return the Short URL to the client so that they can share this link.
 func (u *urlShortner) CreateShortURL(req *dto.ShortenRequest) (resp *dto.ShortenResponse, appErr *errors.AppError) {
 
 	valid, err := req.IsValidURL()
@@ -91,6 +99,7 @@ func (u *urlShortner) CreateShortURL(req *dto.ShortenRequest) (resp *dto.Shorten
 	return dto.NewShortenResponse(shortUrl), nil
 }
 
+// createURLHash generate and returns the longUrl hash with given length as shortUrl
 func createURLHash(longUrl string, hashLen int) (shortUrl string) {
 	if hashLen == 0 {
 		return ""
@@ -101,6 +110,7 @@ func createURLHash(longUrl string, hashLen int) (shortUrl string) {
 	return fmt.Sprintf("%x", sha)[:hashLen]
 }
 
+// GetTopMetric gets top N(count) most visited URLs in descending order of visit count
 func (u *urlShortner) GetTopMetric(count int) *dto.TopMetricResponse {
 	metricsMap, _ := u.db.GetTopMetric(count)
 	return dto.NewTopMetricRespons(metricsMap)
